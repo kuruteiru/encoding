@@ -28,7 +28,7 @@ void insertMinHeapNode(MinHeap *self, MinHeapNode *node);
 void buildMinHeap(MinHeap *self);
 
 MinHeapNode* getMinimum(MinHeap *self);
-MinHeapNode* BuildHuffmanTree();
+MinHeapNode* BuildHuffmanTree(char values[], int frequencies[], int size);
 
 void printIntArray(int array[], int length);
 void printCodes(MinHeapNode *root, int codes[], int index);
