@@ -1,31 +1,38 @@
 #ifndef HUFFMAN_H
 #define HUFFMAN_H
 
-#include <inttypes.h>
-
-typedef struct BitStream {
-    uint8_t bits[8];
-} BitStream;
+#include <stdbool.h>
 
 typedef struct MinHeapNode {
-    char data;
+    struct MinHeapNode *left, *right;
     unsigned int frequency;
-    struct HuffmanNode *left, *right;
+    char value;
 } MinHeapNode;
 
-MinHeapNode* newMinHeapNode(char data, unsigned int frequency);
+MinHeapNode* newMinHeapNode(char value, unsigned int frequency);
 
 void swapMinHeapNodes(MinHeapNode **a, MinHeapNode **b);
 
+bool isLeaf(MinHeapNode *node);
+
 typedef struct MinHeap {
-    unsigned int size;
-    unsigned int capacity;
     MinHeapNode **array;
+    unsigned int capacity;
+    unsigned int size;
 } MinHeap;
 
 MinHeap* initializeMinHeap(unsigned int capacity);
 
-void sortFrequencies(char values[], float frequencies[], int length);
-void reduceFrequencies();
+void minHeapify(MinHeap *self, int index);
+void insertMinHeapNode(MinHeap *self, MinHeapNode *node);
+void buildMinHeap(MinHeap *self);
+
+MinHeapNode* getMinimum(MinHeap *self);
+MinHeapNode* BuildHuffmanTree();
+
+void printIntArray();
+void printCodes(MinHeapNode *root, int codes[], int index);
+
+void huffmanEncode(char values[], int frequencies[], int size);
 
 #endif //HUFFMAN_H
