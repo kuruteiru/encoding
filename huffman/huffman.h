@@ -16,7 +16,7 @@ void swapMinHeapNodes(MinHeapNode **a, MinHeapNode **b);
 bool isLeaf(MinHeapNode *node);
 
 typedef struct MinHeap {
-    MinHeapNode **array;
+    MinHeapNode **nodes;
     unsigned int capacity;
     unsigned int size;
 } MinHeap;
@@ -30,7 +30,7 @@ void buildMinHeap(MinHeap *self);
 MinHeapNode* getMinimum(MinHeap *self);
 MinHeapNode* BuildHuffmanTree();
 
-void printIntArray();
+void printIntArray(int array[], int length);
 void printCodes(MinHeapNode *root, int codes[], int index);
 
 void huffmanEncode(char values[], int frequencies[], int size);
