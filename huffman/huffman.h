@@ -21,7 +21,7 @@ typedef struct MinHeap {
     unsigned int size;
 } MinHeap;
 
-MinHeap* initializeMinHeap(unsigned int capacity);
+MinHeap* newMinHeap(unsigned int capacity);
 
 void minHeapify(MinHeap *self, int index);
 void insertMinHeapNode(MinHeap *self, MinHeapNode *node);
