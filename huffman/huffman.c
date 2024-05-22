@@ -25,7 +25,7 @@ bool isLeaf(MinHeapNode *node) {
 }
 
 MinHeap* newMinHeap(unsigned int capacity) {
-    MinHeap *minHeap = (MinHeap*)malloc(sizeof(minHeap));
+    MinHeap *minHeap = (MinHeap*)malloc(sizeof(MinHeap));
 
     minHeap->nodes = (MinHeapNode**)malloc(capacity * sizeof(MinHeapNode*));
     minHeap->capacity = capacity;
@@ -55,7 +55,7 @@ void minHeapify(MinHeap *self, unsigned int index) {
     int left = index * 2 + 1;
     int right = index * 2 + 2;
 
-    if (left < self->size 
+    if (left < self->size
     && self->nodes[left]->frequency < self->nodes[min]->frequency) {
         min = left;
     }
@@ -87,6 +87,7 @@ MinHeapNode* getMinimum(MinHeap *self) {
 
     self->nodes[0] = self->nodes[self->size - 1];
     self->size--;
+
     minHeapify(self, 0);
 
     return min;
@@ -94,6 +95,8 @@ MinHeapNode* getMinimum(MinHeap *self) {
 
 MinHeap* initializeMinHeap
 (char values[], unsigned int frequencies[], unsigned int capacity) {
+    if (!capacity) return NULL;
+
     MinHeap *minHeap = newMinHeap(capacity);
 
     minHeap->size = capacity;
@@ -109,8 +112,10 @@ MinHeap* initializeMinHeap
 MinHeapNode* buildHuffmanTree
 (char values[], unsigned int frequencies[], unsigned int capacity) {
     MinHeap *minHeap = initializeMinHeap(values, frequencies, capacity);
-    MinHeapNode *left, *right, *parent;
+    if (!minHeap) return NULL;
 
+    MinHeapNode *left, *right, *parent;
+    
     while (minHeap->size != 1) {
         left = getMinimum(minHeap);
         right = getMinimum(minHeap);
@@ -154,7 +159,7 @@ void printCodes(MinHeapNode *node, unsigned int codes[], unsigned int index) {
     }
 
     if (isLeaf(node)) {
-        printf("%d: ", node->value);
+        printf("value: % c | frequency: %2d | code: ", node->value, node->frequency);
         for (unsigned int i = 0; i < index; i++) {
             printf("%d", codes[i]);
         }
