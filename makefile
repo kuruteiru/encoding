@@ -5,3 +5,7 @@ clean:
 huffman: main.c huffman/huffman.c
 	gcc $^ -o $@
 	@echo "$^ compiled into $@"
+
+main: main.c huffman/huffman.c
+	gcc $^ -o $@
+	@echo "$^ compiled into $@"
