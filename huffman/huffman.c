@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <malloc.h>
 #include "huffman.h"
 
@@ -80,7 +81,7 @@ void minHeapifyNonLeaves(MinHeap *self) {
 }
 
 MinHeapNode* getMinimum(MinHeap *self) {
-    if (!self) return;
+    if (!self) return NULL;
     
     MinHeapNode *min = self->nodes[0];
 
@@ -124,6 +125,17 @@ MinHeapNode* buildHuffmanTree
     return getMinimum(minHeap);
 }
 
+int getHuffmanTreeHeight(MinHeapNode *node) {
+    if (!node) return 0;
+
+    int left = getHuffmanTreeHeight(node->left);
+    int right = getHuffmanTreeHeight(node->right);
+
+    if (left > right) return ++left;
+
+    return ++right;
+}
+
 void printIntArray() {
 
 }
@@ -148,4 +160,12 @@ void printCodes(MinHeapNode *node, unsigned int codes[], unsigned int index) {
         }
         printf("\n");
     }
+}
+
+void huffmanEncode(char values[], int frequencies[], unsigned int capacity) {
+    MinHeapNode *root = buildHuffmanTree(values, frequencies, capacity);
+    int codes[getHuffmanTreeHeight(root)];
+    int index = 0;
+
+    printCodes(root, codes, index);
 }
