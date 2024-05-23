@@ -139,10 +139,6 @@ int getHuffmanTreeHeight(MinHeapNode *node) {
     return ++right;
 }
 
-void printIntArray() {
-
-}
-
 void printCodes(MinHeapNode *node, uint8_t codeBuffer[], uint32_t index) {
     if (!node) return;
     
