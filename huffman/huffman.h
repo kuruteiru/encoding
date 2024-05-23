@@ -2,14 +2,15 @@
 #define HUFFMAN_H
 
 #include <stdbool.h>
+#include <inttypes.h>
 
 typedef struct MinHeapNode {
     struct MinHeapNode *left, *right;
-    unsigned int frequency;
+    float frequency;
     char value;
 } MinHeapNode;
 
-MinHeapNode* newMinHeapNode(char value, unsigned int frequency);
+MinHeapNode* newMinHeapNode(char value, float frequency);
 
 void swapMinHeapNodes(MinHeapNode **nodeA, MinHeapNode **nodeB);
 
@@ -17,23 +18,21 @@ bool isLeaf(MinHeapNode *node);
 
 typedef struct MinHeap {
     MinHeapNode **nodes;
-    unsigned int capacity;
-    unsigned int size;
+    uint32_t capacity;
+    uint32_t size;
 } MinHeap;
 
-MinHeap* newMinHeap(unsigned int capacity);
-MinHeap* initializeMinHeap
-(char values[], unsigned int frequencies[], unsigned int capacity);
+MinHeap* newMinHeap(uint32_t capacity);
+MinHeap* initializeMinHeap(char values[], float frequencies[], uint32_t capacity);
 
 void insertMinHeapNode(MinHeap *self, MinHeapNode *node);
-void minHeapify(MinHeap *self, unsigned int index);
+void minHeapify(MinHeap *self, uint32_t index);
 void minHeapifyNonLeaves(MinHeap *self);
 
 MinHeapNode* getMinimum(MinHeap *self);
-MinHeapNode* buildHuffmanTree
-(char values[], unsigned int frequencies[], unsigned int capacity);
+MinHeapNode* buildHuffmanTree(char values[], float frequencies[], uint32_t capacity);
 
-void printCodes(MinHeapNode *node, unsigned int codes[], unsigned int index);
-void huffmanEncode(char values[], int frequencies[], unsigned int capacity);
+void printCodes(MinHeapNode *node, uint8_t codeBuffer[], uint32_t index);
+void huffmanEncode(char values[], float frequencies[], uint32_t capacity);
 
 #endif //HUFFMAN_H

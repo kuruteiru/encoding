@@ -2,7 +2,7 @@
 #include <malloc.h>
 #include "huffman.h"
 
-MinHeapNode* newMinHeapNode(char value, unsigned int frequency) {
+MinHeapNode* newMinHeapNode(char value, float frequency) {
     MinHeapNode *node = (MinHeapNode*)malloc(sizeof(MinHeapNode));
 
     node->value = value;
@@ -24,7 +24,7 @@ bool isLeaf(MinHeapNode *node) {
     return !node->left && !node->right;
 }
 
-MinHeap* newMinHeap(unsigned int capacity) {
+MinHeap* newMinHeap(uint32_t capacity) {
     MinHeap *minHeap = (MinHeap*)malloc(sizeof(MinHeap));
 
     minHeap->nodes = (MinHeapNode**)malloc(capacity * sizeof(MinHeapNode*));
@@ -48,7 +48,7 @@ void insertMinHeapNode(MinHeap *self, MinHeapNode *node) {
     self->nodes[index] = node;
 }
 
-void minHeapify(MinHeap *self, unsigned int index) {
+void minHeapify(MinHeap *self, uint32_t index) {
     if (!self || index > self->size) return;
 
     int min = index;
@@ -93,14 +93,13 @@ MinHeapNode* getMinimum(MinHeap *self) {
     return min;
 }
 
-MinHeap* initializeMinHeap
-(char values[], unsigned int frequencies[], unsigned int capacity) {
+MinHeap* initializeMinHeap(char values[], float frequencies[], uint32_t capacity) {
     if (!capacity) return NULL;
 
     MinHeap *minHeap = newMinHeap(capacity);
 
     minHeap->size = capacity;
-    for (unsigned int i = 0; i < capacity; i++) {
+    for (uint32_t i = 0; i < capacity; i++) {
         minHeap->nodes[i] = newMinHeapNode(values[i], frequencies[i]);
     }
 
@@ -109,8 +108,7 @@ MinHeap* initializeMinHeap
     return minHeap;
 }
 
-MinHeapNode* buildHuffmanTree
-(char values[], unsigned int frequencies[], unsigned int capacity) {
+MinHeapNode* buildHuffmanTree(char values[], float frequencies[], uint32_t capacity) {
     MinHeap *minHeap = initializeMinHeap(values, frequencies, capacity);
     if (!minHeap) return NULL;
 
@@ -145,32 +143,32 @@ void printIntArray() {
 
 }
 
-void printCodes(MinHeapNode *node, unsigned int codes[], unsigned int index) {
+void printCodes(MinHeapNode *node, uint8_t codeBuffer[], uint32_t index) {
     if (!node) return;
     
     if (node->left) {
-        codes[index] = 0;
-        printCodes(node->left, codes, index + 1);
+        codeBuffer[index] = 0;
+        printCodes(node->left, codeBuffer, index + 1);
     }
     
     if (node->right) {
-        codes[index] = 1;
-        printCodes(node->right, codes, index + 1);
+        codeBuffer[index] = 1;
+        printCodes(node->right, codeBuffer, index + 1);
     }
 
     if (isLeaf(node)) {
-        printf("value: % c | frequency: %2d | code: ", node->value, node->frequency);
-        for (unsigned int i = 0; i < index; i++) {
-            printf("%d", codes[i]);
+        printf("value: % c | frequency: %5.2f | code: ", node->value, node->frequency);
+        for (uint32_t i = 0; i < index; i++) {
+            printf("%d", codeBuffer[i]);
         }
         printf("\n");
     }
 }
 
-void huffmanEncode(char values[], int frequencies[], unsigned int capacity) {
+void huffmanEncode(char values[], float frequencies[], uint32_t capacity) {
     MinHeapNode *root = buildHuffmanTree(values, frequencies, capacity);
-    int codes[getHuffmanTreeHeight(root)];
-    int index = 0;
+    uint8_t codeBuffer[getHuffmanTreeHeight(root)];
+    uint32_t index = 0;
 
-    printCodes(root, codes, index);
+    printCodes(root, codeBuffer, index);
 }
