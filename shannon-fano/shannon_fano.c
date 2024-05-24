@@ -24,7 +24,6 @@ bool isSFNodeLeaf(SFNode *node) {
 
 SFNode** splitSFNode(SFNode *node) {
     if (!node) return NULL;
-
 }
 
 float sumFloatArray(float array[], uint32_t length) {
@@ -99,7 +98,7 @@ SFNode* buildShannonFanoTree(char *values, float *frequencies, uint32_t length) 
     SFNode **nodes = (SFNode**)malloc(length * sizeof(SFNode*));
 
     for (size_t i = 0; i < length; i++) {
-        nodes[i] = newSFNode(values[i], frequencies[i]);
+        nodes[i] = newSFNode(&values[i], frequencies[i]);
     }
     
     SFNode *root = buildTree(nodes, 0, length);
@@ -135,16 +134,16 @@ SFNode* buildTree(SFNode **nodes, uint32_t start, uint32_t end) {
     return current;
 }
 
-void appendSFNode(SFNode *parent, SFNode *node) {
-    if (!parent) return;
+// void appendSFNode(SFNode *parent, SFNode *node) {
+//     if (!parent) return;
 
-    if (!parent->left) {
-        parent->left = node;
-        return;
-    }
+//     if (!parent->left) {
+//         parent->left = node;
+//         return;
+//     }
     
-    if (!parent->right) {
-        parent->right = node;
-        return;
-    }
-}
+//     if (!parent->right) {
+//         parent->right = node;
+//         return;
+//     }
+// }

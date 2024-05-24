@@ -17,10 +17,10 @@ SFNode* newSFNode(char value[], float frequency);
 bool isLeaf(SFNode *node);
 
 SFNode** splitSFNode(SFNode *node);
-// SFNode* buildShannonFanoTree(char values[], float frequencies[]);
-SFNode* buildShannonFanoTree(SFNode *parent, uint32_t length, char *values, float *frequencies) {
+SFNode* buildShannonFanoTree(char *values, float *frequencies, uint32_t length);
+SFNode* buildTree(SFNode **nodes, uint32_t start, uint32_t end);
 
-void appendSFNode(SFNode *parent, SFNode *node);
+// void appendSFNode(SFNode *parent, SFNode *node);
 void printCodes(SFNode *node, uint8_t codeBuffer[], uint32_t index);
 void ShannonFanoEncode(char values[], float frequencies[]);
 
