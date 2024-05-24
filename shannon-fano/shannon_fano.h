@@ -16,15 +16,9 @@ SFNode* newSFNode(char value[], float frequency);
 
 bool isLeaf(SFNode *node);
 
-// typedef struct SFTree {
-//     SFNode *root;
-//     uint32_t height;
-// } SFTree;
-
-// SFTree* newSFTree(SFNode *root);
-
 SFNode** splitSFNode(SFNode *node);
-SFNode* buildShannonFanoTree(char values[], float frequencies[]);
+// SFNode* buildShannonFanoTree(char values[], float frequencies[]);
+SFNode* buildShannonFanoTree(SFNode *parent, uint32_t length, char *values, float *frequencies) {
 
 void appendSFNode(SFNode *parent, SFNode *node);
 void printCodes(SFNode *node, uint8_t codeBuffer[], uint32_t index);
