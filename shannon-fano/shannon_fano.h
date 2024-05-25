@@ -9,19 +9,19 @@ typedef struct SFNode {
     uint32_t length;
     float frequency;
     char *value;
-    char *code;
 } SFNode;
 
 SFNode* newSFNode(char value[], float frequency);
 
-bool isLeaf(SFNode *node);
+bool isSFNodeLeaf(SFNode *node);
 
-SFNode** splitSFNode(SFNode *node);
-SFNode* buildShannonFanoTree(char *values, float *frequencies, uint32_t length);
-SFNode* buildTree(SFNode **nodes, uint32_t start, uint32_t end);
+SFNode* shannonFanoEncode(char values[], float frequencies[]);
+SFNode* buildSFTree(SFNode **nodes, uint32_t start, uint32_t end);
 
-// void appendSFNode(SFNode *parent, SFNode *node);
-void printCodes(SFNode *node, uint8_t codeBuffer[], uint32_t index);
-void ShannonFanoEncode(char values[], float frequencies[]);
+void printSFTree(SFNode *root, int depth, uint8_t codeBuffer[]);
+void printSFNodesInline(SFNode **nodes, uint32_t length);
+
+void bubbleSortSFNodes(SFNode **nodes, uint32_t length);
+void bubbleSortSFNodesDESC(SFNode **nodes, uint32_t length);
 
 #endif //SHANNON_FANO_H

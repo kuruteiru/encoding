@@ -9,10 +9,9 @@ SFNode* newSFNode(char value[], float frequency) {
     
     node->left = NULL;
     node->right = NULL;
-    node->code = NULL;
     node->length = !value ? 0 : strlen(value);
     node->frequency = frequency;
-    node->value = value;
+    node->value = strdup(value);
 
     return node;
 }
@@ -22,8 +21,10 @@ bool isSFNodeLeaf(SFNode *node) {
     return !node->left && !node->right;
 }
 
-SFNode** splitSFNode(SFNode *node) {
-    if (!node) return NULL;
+int compareSFNodes(const void *nodeA, const void *nodeB) {
+    float a = ((SFNode*)nodeA)->frequency;
+    float b = ((SFNode*)nodeB)->frequency;
+    return (a < b) - (a > b);
 }
 
 float sumFloatArray(float array[], uint32_t length) {
@@ -35,89 +36,37 @@ float sumFloatArray(float array[], uint32_t length) {
     return sum; 
 }
 
-// SFNode* buildShannonFanoTree(char values[], float frequencies[]) {
-//     if (!values || !frequencies) return NULL;
-
-//     uint32_t length = strlen(values);
-//     SFNode *root = newSFNode(values, sumFloatArray(frequencies, strlen(values)));
-//     // SFNode *current = root;
-
-//     float left[length];
-//     // float right[] = frequencies;
-//     for (size_t i = 0; i < length; i++) {
-//         left[i] = frequencies[i];
-//         float leftSum = sumFloatArray(left, i+1);
-//         float rightSum = sumFloatArray(&frequencies[i + 1], length - (i + 1));
-//         printf("leftsum: %.3f, rightsum: %.3f\n", leftSum, rightSum);
-//         if (leftSum > rightSum) {
-//             printf("found\n");
-//         }
-//     }
-
-//     return root;
-// }
-
-// SFNode* buildShannonFanoTree(SFNode *parent, uint32_t length, char *values, float *frequencies) {
-//     if (!values || !frequencies) return NULL;
-
-//     char leftValues[length];
-//     float leftFrequency = 0;
-
-//     char rightValues[length];
-//     strcpy(rightValues, values);
-//     float rightFrequency = sumFloatArray(frequencies, length);
-
-//     uint32_t i = 0;
-//     for (i = 0; i < length; i++) {
-//         if (leftFrequency < rightFrequency) {
-//             printf("found\n");
-//             leftValues[i] = values[i];
-//         }
-//         leftFrequency += frequencies[i];
-//         rightFrequency -= frequencies[i];
-        
-//         printf("leftsum: %.3f, rightsum: %.3f\n", leftFrequency, rightFrequency);
-
-//     }
-
-//     SFNode *left = newSFNode(leftValues, leftFrequency);
-//     SFNode *right = newSFNode(rightValues, rightFrequency);
-
-//     left = buildShannonFanoTree(parent->left, i, values, frequencies);
-//     right = buildShannonFanoTree(parent->right, length - i, values[i], frequencies);
-
-//     if (left) parent->left = left;
-//     if (right) parent->right = right;
-
-//     return parent;
-// }
-
-SFNode* buildShannonFanoTree(char *values, float *frequencies, uint32_t length) {
+SFNode* shannonFanoEncode(char values[], float frequencies[]) {
     if (!values || !frequencies) return NULL;
 
+    uint32_t length = strlen(values);
     SFNode **nodes = (SFNode**)malloc(length * sizeof(SFNode*));
 
     for (size_t i = 0; i < length; i++) {
-        nodes[i] = newSFNode(&values[i], frequencies[i]);
+        nodes[i] = newSFNode((char[2]){values[i], '\0'}, frequencies[i]);
     }
-    
-    SFNode *root = buildTree(nodes, 0, length);
 
+    bubbleSortSFNodesDESC(nodes, length);
+
+    SFNode *root = buildSFTree(nodes, 0, length - 1);
     return root;
 }
 
-SFNode* buildTree(SFNode **nodes, uint32_t start, uint32_t end) {
-    SFNode *current = nodes[start];
-    if (start >= end) current;
+SFNode* buildSFTree(SFNode **nodes, uint32_t start, uint32_t end) {
+     if (start >= end) return nodes[start];
 
     float totalFrequency = 0;
-    for (size_t i = start; i < end; i++) {
+    char totalValue[end - start + 1];
+    uint32_t index = 0;
+    for (size_t i = start; i <= end; i++) {
         totalFrequency += nodes[i]->frequency;
+        totalValue[index++] = *nodes[i]->value;
     }
-    
-    uint32_t mid;
+    totalValue[index] = '\0'; 
+
+    uint32_t mid = start;
     float midFrequency = 0;
-    for (uint32_t i = start; i < end; i++) {
+    for (uint32_t i = start; i <= end; i++) {
         midFrequency += nodes[i]->frequency;
         if (midFrequency >= totalFrequency / 2) {
             mid = i;
@@ -125,25 +74,70 @@ SFNode* buildTree(SFNode **nodes, uint32_t start, uint32_t end) {
         }
     }
 
-    SFNode *left = buildTree(nodes, start, mid);
-    SFNode *right = buildTree(nodes, mid + 1, end);
+    SFNode *parent = newSFNode(totalValue, totalFrequency);
+    parent->left = buildSFTree(nodes, start, mid); 
+    parent->right = buildSFTree(nodes, mid + 1, end); 
 
-    current->left = left; 
-    current->right = right; 
-
-    return current;
+    return parent;
 }
 
-// void appendSFNode(SFNode *parent, SFNode *node) {
-//     if (!parent) return;
+void printSFTree(SFNode *root, int depth, uint8_t codeBuffer[]) {
+    if (!root) return;
 
-//     if (!parent->left) {
-//         parent->left = node;
-//         return;
-//     }
-    
-//     if (!parent->right) {
-//         parent->right = node;
-//         return;
-//     }
-// }
+    for (int i = 0; i < depth; i++) {
+        printf("\t");
+    }
+
+    if (root->value && root->value[0] != '\0') {
+        printf("[v: %s][f: %.2f][c: ", root->value, root->frequency);
+    }
+
+    for (size_t i = 0; i < depth; i++) {
+        printf("%d", codeBuffer[i]);
+    }
+
+    printf("]\n");
+
+    codeBuffer[depth] = 0;
+    printSFTree(root->left, depth + 1, codeBuffer);
+
+    codeBuffer[depth] = 1;
+    printSFTree(root->right, depth + 1, codeBuffer);
+}
+
+void printSFNodesInline(SFNode **nodes, uint32_t length) {
+    for (size_t i = 0; i < length; i++) {
+        printf("nodes[%d] v='%s'f=%.2f, ", i, nodes[i]->value, nodes[i]->frequency);
+    }
+    printf("\n");
+}
+
+void bubbleSortSFNodes(SFNode **nodes, uint32_t length) {
+    bool swapped;
+    for (size_t i = 0; i < length - 1; i++) {
+        swapped = false; 
+        for (size_t j = 0; j < length - i - 1; j++) {
+            if (nodes[j]->frequency < nodes[j + 1]->frequency) continue;
+            SFNode *temp = nodes[j];
+            nodes[j] = nodes[j + 1];
+            nodes[j + 1] = temp;
+            swapped = true;
+        }
+        if (!swapped) break;
+    }
+}
+
+void bubbleSortSFNodesDESC(SFNode **nodes, uint32_t length) {
+    bool swapped;
+    for (size_t i = length - 1; i > 0; i--) {
+        swapped = false; 
+        for (size_t j = length - 1; j > -i - 1 + length; j--) {
+            if (nodes[j]->frequency < nodes[j - 1]->frequency) continue;
+            SFNode *temp = nodes[j];
+            nodes[j] = nodes[j - 1];
+            nodes[j - 1] = temp;
+            swapped = true;
+        }
+        if (!swapped) break;
+    }
+}
