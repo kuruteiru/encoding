@@ -153,7 +153,7 @@ void printCodes(MinHeapNode *node, uint8_t codeBuffer[], uint32_t index) {
     }
 
     if (isLeaf(node)) {
-        printf("value: % c | frequency: %5.2f | code: ", node->value, node->frequency);
+        printf("v: % c | f: %5.2f | c: ", node->value, node->frequency);
         for (uint32_t i = 0; i < index; i++) {
             printf("%d", codeBuffer[i]);
         }
