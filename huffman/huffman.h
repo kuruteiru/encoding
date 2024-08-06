@@ -32,7 +32,9 @@ void minHeapifyNonLeaves(MinHeap *self);
 MinHeapNode* getMinimum(MinHeap *self);
 MinHeapNode* buildHuffmanTree(char values[], float frequencies[], uint32_t capacity);
 
-void printCodes(MinHeapNode *node, uint8_t codeBuffer[], uint32_t index);
+void printHuffmanTree(MinHeapNode *node, uint32_t depth, uint8_t codeBuffer[]);
+void printHuffmanTable(MinHeapNode *node, uint32_t index, uint8_t codeBuffer[]);
+
 void huffmanEncode(char values[], float frequencies[], uint32_t capacity);
 
 #endif //HUFFMAN_H

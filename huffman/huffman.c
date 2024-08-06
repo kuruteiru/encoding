@@ -139,17 +139,50 @@ int getHuffmanTreeHeight(MinHeapNode *node) {
     return ++right;
 }
 
-void printCodes(MinHeapNode *node, uint8_t codeBuffer[], uint32_t index) {
+void printHuffmanTree(MinHeapNode *node, uint32_t depth, uint8_t codeBuffer[]) {
     if (!node) return;
-    
+
+    if (isLeaf(node)) {
+        for (size_t i = 0; i < depth; i++) {
+            printf("  ");
+        }
+
+        if (node->value && node->frequency) {
+            printf("[%c][", node->value, node->frequency);
+        }
+
+        for (size_t i = 0; i < depth; i++) {
+            printf("%d", codeBuffer[i]);
+        }
+
+        printf("]\n");
+    } else {
+        for (size_t i = 0; i < depth; i++) {
+            printf("  ");
+        }
+
+        printf("[X]\n");
+    } 
+
+    codeBuffer[depth] = 0;
+    printHuffmanTree(node->left, depth + 1, codeBuffer);
+
+    codeBuffer[depth] = 1;
+    printHuffmanTree(node->right, depth + 1, codeBuffer);
+
+}
+
+void printHuffmanTable(MinHeapNode *node, uint32_t index, uint8_t codeBuffer[]) {
+    if (!node) return;
+
     if (node->left) {
         codeBuffer[index] = 0;
-        printCodes(node->left, codeBuffer, index + 1);
+        printHuffmanTable(node->left, index + 1, codeBuffer);
     }
     
     if (node->right) {
         codeBuffer[index] = 1;
-        printCodes(node->right, codeBuffer, index + 1);
+        printHuffmanTable(node->right, index + 1, codeBuffer);
     }
 
     if (isLeaf(node)) {
@@ -164,7 +197,11 @@ void printCodes(MinHeapNode *node, uint8_t codeBuffer[], uint32_t index) {
 void huffmanEncode(char values[], float frequencies[], uint32_t capacity) {
     MinHeapNode *root = buildHuffmanTree(values, frequencies, capacity);
     uint8_t codeBuffer[getHuffmanTreeHeight(root)];
+    uint8_t codeBuffer2[getHuffmanTreeHeight(root)];
     uint32_t index = 0;
 
-    printCodes(root, codeBuffer, index);
+    // printCodes(root, codeBuffer, index);
+    printHuffmanTable(root, index, codeBuffer);
+    printHuffmanTree(root, 0, codeBuffer);
+    // printHuffmanTree(root, 0, codeBuffer2);
 }
