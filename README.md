@@ -5,6 +5,7 @@ The input of this program is an array of characters and another array of their c
 Compile with gcc and make.
 
 ```bash
-$ make main
-$ ./main.exe
+$ make clean
+$ make build.exe
+$ ./build/encoding.exe
 ```
