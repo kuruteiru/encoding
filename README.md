@@ -6,6 +6,6 @@ Compile with gcc and make.
 
 ```bash
 $ make clean
-$ make build.exe
-$ ./build/encoding.exe
+$ make build
+$ ./build/encoding
 ```
