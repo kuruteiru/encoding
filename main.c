@@ -72,11 +72,16 @@ int main() {
             continue;
         }
 
+        GuiLabel((Rectangle){screenWidth / 2 - 150, 130, 300, 20}, "input string to encode");
+
         if (GuiTextBox((Rectangle){ screenWidth / 2 - 150, 150, 300, 50 }, inputBuffer, 256, editMode)) {
             editMode = !editMode;
         }
 
-        if (GuiButton((Rectangle){ screenWidth / 2 - 150, 240, 300, 50 }, "huffman")) {
+        GuiLabel((Rectangle){screenWidth / 2 - 150, 220, 300, 20}, "select encoding method");
+
+        if (GuiButton((Rectangle){ screenWidth / 2 - 150, 240, 300, 50 }, "huffman")
+            && strlen(inputBuffer)) {
             drawHuffman = true;
             drawMenu = false;
 
@@ -89,7 +94,8 @@ int main() {
             // printf("\n");
         } 
 
-        if (GuiButton((Rectangle){ screenWidth / 2 - 150, 300, 300, 50 }, "shannon-fano")) {
+        if (GuiButton((Rectangle){ screenWidth / 2 - 150, 300, 300, 50 }, "shannon-fano")
+            && strlen(inputBuffer)) {
             drawShannonFano = true;
             drawMenu = false;
 
@@ -150,14 +156,14 @@ void drawSFTree(SFNode *node, int x, int y, int offsetX, int offsetY) {
     if (node->left) {
         DrawLine(x, lineY, x - offsetX, y + offsetY, DARKGRAY);
         int labelWidth = MeasureText("0", 20);
-        DrawText("0", x - offsetX - labelWidth / 2, y + offsetY - rectHeight, 20, RED);
+        DrawText("0", x - offsetX - labelWidth / 2, y + offsetY - rectHeight - 10, 20, RED);
         drawSFTree(node->left, x - offsetX, y + offsetY, offsetX / 2, offsetY);
     }
 
     if (node->right) {
         DrawLine(x, lineY, x + offsetX, y + offsetY, DARKGRAY);
         int labelWidth = MeasureText("1", 20);
-        DrawText("1", x + offsetX - labelWidth / 2, y + offsetY - rectHeight, 20, RED);
+        DrawText("1", x + offsetX - labelWidth / 2, y + offsetY - rectHeight - 10, 20, RED);
         drawSFTree(node->right, x + offsetX, y + offsetY, offsetX / 2, offsetY);
     }
 }
@@ -179,16 +185,20 @@ void drawHuffmanTree(MinHeapNode *node, int x, int y, int offsetX, int offsetY) 
     if (node->left) {
         DrawLine(x, lineY, x - offsetX, y + offsetY, DARKGRAY);
         int labelWidth = MeasureText("0", 20);
-        DrawText("0", x - offsetX - labelWidth / 2, y + offsetY - rectHeight, 20, BLUE);
+        DrawText("0", x - offsetX - labelWidth / 2, y + offsetY - rectHeight - 10, 20, BLUE);
         drawHuffmanTree(node->left, x - offsetX, y + offsetY, offsetX / 2, offsetY);
     }
 
     if (node->right) {
         DrawLine(x, lineY, x + offsetX, y + offsetY, DARKGRAY);
         int labelWidth = MeasureText("1", 20);
-        DrawText("1", x + offsetX - labelWidth / 2, y + offsetY - rectHeight, 20, BLUE);
+        DrawText("1", x + offsetX - labelWidth / 2, y + offsetY - rectHeight - 10, 20, BLUE);
         drawHuffmanTree(node->right, x + offsetX, y + offsetY, offsetX / 2, offsetY);
     }
 }
+
+void drawTable();
+void drawAverageCodeLength();
+void drawEffectivness();
 
 #endif //RAYGUI_IMPLEMENTATION
