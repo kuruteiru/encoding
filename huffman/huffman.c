@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <math.h>
 #include "huffman.h"
 
 MinHeapNode* newMinHeapNode(char value, float frequency) {
@@ -204,4 +205,54 @@ void huffmanEncode(char values[], float frequencies[], uint32_t capacity) {
     printHuffmanTable(root, index, codeBuffer);
     printHuffmanTree(root, 0, codeBuffer);
     // printHuffmanTree(root, 0, codeBuffer2);
+}
+
+void calculateAverageHuffmanCodeLength(MinHeapNode *root, float *totalLength, float *totalFrequency, int currentDepth) {
+    if (!root) return;
+
+    if (isLeaf(root)) {
+        *totalLength += currentDepth * root->frequency;
+        *totalFrequency += root->frequency;
+    }
+
+    calculateAverageHuffmanCodeLength(root->left, totalLength, totalFrequency, currentDepth + 1);
+    calculateAverageHuffmanCodeLength(root->right, totalLength, totalFrequency, currentDepth + 1);
+}
+
+float getAverageHuffmanCodeLength(MinHeapNode *root) {
+    float totalLength = 0;
+    float totalFrequency = 0;
+    calculateAverageHuffmanCodeLength(root, &totalLength, &totalFrequency, 0);
+    
+    return totalFrequency > 0 ? totalLength / totalFrequency : 0;
+}
+    
+float calculateTotalHuffmanFrequency(MinHeapNode *root) {
+    if (root == NULL) return 0;
+    if (isLeaf(root)) return root->frequency;
+    return calculateTotalHuffmanFrequency(root->left) + calculateTotalHuffmanFrequency(root->right);
+}
+
+float calculateHuffmanEntropyRecursive(MinHeapNode *root, float totalFrequency) {
+    if (root == NULL) return 0;
+    
+    if (isLeaf(root)) {
+        float probability = root->frequency / totalFrequency;
+        return -probability * log2f(probability);
+    }
+    
+    return calculateHuffmanEntropyRecursive(root->left, totalFrequency) + 
+           calculateHuffmanEntropyRecursive(root->right, totalFrequency);
+}
+
+float calculateHuffmanEntropy(MinHeapNode *root) {
+    float totalFrequency = calculateTotalHuffmanFrequency(root);
+    return calculateHuffmanEntropyRecursive(root, totalFrequency);
+}
+
+float getHuffmanCodeEffectivity(MinHeapNode *root) {
+    float averageLength = getAverageHuffmanCodeLength(root);
+    float entropy = calculateHuffmanEntropy(root);
+
+    return averageLength > 0 ? entropy / averageLength : 0;
 }

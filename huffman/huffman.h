@@ -37,4 +37,10 @@ void printHuffmanTable(MinHeapNode *node, uint32_t index, uint8_t codeBuffer[]);
 
 void huffmanEncode(char values[], float frequencies[], uint32_t capacity);
 
+float getAverageHuffmanCodeLength(MinHeapNode *root);
+float calculateTotalHuffmanFrequency(MinHeapNode *root);
+float calculateHuffmanEntropyRecursive(MinHeapNode *root, float totalFrequency);
+float calculateHuffmanEntropy(MinHeapNode *root);
+float getHuffmanCodeEffectivity(MinHeapNode *root);
+
 #endif //HUFFMAN_H

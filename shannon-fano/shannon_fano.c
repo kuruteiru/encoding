@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
+#include <math.h>
 #include "shannon_fano.h"
 
 SFNode* newSFNode(char value[], float frequency) {
@@ -140,4 +141,58 @@ void bubbleSortSFNodesDESC(SFNode **nodes, uint32_t length) {
         }
         if (!swapped) break;
     }
+}
+
+void calculateAverageSFCodeLength(SFNode *root, float *totalLength, float *totalFrequency, int currentDepth) {
+    if (!root) return;
+
+    if (isSFNodeLeaf(root)) {
+        *totalLength += currentDepth * root->frequency;
+        *totalFrequency += root->frequency;
+    }
+
+    calculateAverageSFCodeLength(root->left, totalLength, totalFrequency, currentDepth + 1);
+    calculateAverageSFCodeLength(root->right, totalLength, totalFrequency, currentDepth + 1);
+}
+
+float getAverageSFCodeLength(SFNode *root) {
+    float totalLength = 0;
+    float totalFrequency = 0;
+    calculateAverageSFCodeLength(root, &totalLength, &totalFrequency, 0);
+    
+    return totalFrequency > 0 ? totalLength / totalFrequency : 0;
+}
+    
+float calculateTotalSFFrequency(SFNode *root) {
+    if (root == NULL) return 0;
+    if (isSFNodeLeaf(root)) return root->frequency;
+    return calculateTotalSFFrequency(root->left) + calculateTotalSFFrequency(root->right);
+}
+
+float calculateSFEntropyRecursive(SFNode *root, float totalFrequency) {
+    if (root == NULL) return 0;
+    
+    if (isSFNodeLeaf(root)) {
+        float probability = root->frequency / totalFrequency;
+        return -probability * log2f(probability);
+    }
+    
+    return calculateSFEntropyRecursive(root->left, totalFrequency) + 
+           calculateSFEntropyRecursive(root->right, totalFrequency);
+}
+
+float calculateSFEntropy(SFNode *root) {
+    float totalFrequency = calculateTotalSFFrequency(root);
+    return calculateSFEntropyRecursive(root, totalFrequency);
+}
+
+float getSFCodeEffectivity(SFNode *root) {
+    float averageLength = getAverageSFCodeLength(root);
+    float entropy = calculateSFEntropy(root);
+    
+    printf("%.2f\n", averageLength);    
+    printf("%.2f\n", entropy);    
+
+    if (averageLength == 0) return 0;
+    return entropy / averageLength;
 }

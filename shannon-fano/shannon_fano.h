@@ -24,4 +24,10 @@ void printSFNodesInline(SFNode **nodes, uint32_t length);
 void bubbleSortSFNodes(SFNode **nodes, uint32_t length);
 void bubbleSortSFNodesDESC(SFNode **nodes, uint32_t length);
 
+float getAverageSFCodeLength(SFNode *root);
+float calculateTotalSFFrequency(SFNode *root);
+float calculateSFEntropyRecursive(SFNode *root, float totalFrequency);
+float calculateSFEntropy(SFNode *root);
+float getSFCodeEffectivity(SFNode *root);
+
 #endif //SHANNON_FANO_H
